@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Update test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    Testing Update Looping
+    <p>Seconds: <span id="seconds"></span></p>
+    <p>Minutes: <span id="minutes">None Yet!</span></p>
+    <p>Hours: <span id="hours">None Yet!</span></p>
+  </body>
+  <script type="text/javascript">
+  const secondsToAppend = document.getElementById('seconds');
+  const minutestoAppend = document.getElementById('minutes');
+  const hourstoAppend = document.getElementById('hours');
+
+  document.addEventListener("DOMContentLoaded", function() {
+    const timeStarted = Date.now();
+    let loopStart = Date.now();
+    let minutes = 0;
+    let hours = 0;
+    let actualLoop = setInterval(function(){
+      const loopInterval = (Date.now() - loopStart) / 1000;
+      if (loopInterval <= 60){
+        secondsToAppend.innerHTML = loopInterval + 's';
+        return loopInterval;
+      } else {
+        if (minutes < 59){
+          minutes++;
+          minutestoAppend.innerHTML = minutes;
+        } else {
+          minutes = 0;
+          minutestoAppend.innerHTML = minutes;
+          hours++;
+          hourstoAppend.innerHTML = hours;
+        }
+        loopStart = Date.now();
+        // clearInterval(actualLoop);
+        // location.reload();
+      }
+    }, 1);
+  });
+  </script>
+</html>
