@@ -24,7 +24,7 @@
       <button type="button" id="clear">Clear</button>
     </div>
     <div>
-      <h3>How long you've worked!:</h3>
+      <h3>How long you've worked:</h3>
       <ul id="worked">
       </ul>
     </div>
@@ -45,7 +45,8 @@
   let actualLoop;
   let currentWork = [];
   let previousWork = [];
-  let loopInterval, minutes, hours;
+  let timeStart, timeEnd, verifiedTime;
+  let loopInterval, minutes, hours, afterNoon;
 
 
   let createBlock = function() {
@@ -57,17 +58,34 @@
     document.body.appendChild(thisDiv);
   }
 
+  let formatTime = function(hoursToVerify, minutesToVerify) {
+    afterNoon = "PM";
+    if (hoursToVerify < 12) {
+      afterNoon = "AM";
+      hours = hoursToVerify;
+    } else {
+      hours = parseInt(hoursToVerify) - 12;
+    }
+    if (minutesToVerify < 10) {
+      minutes = "0" + minutesToVerify;
+    } else {
+      minutes = minutesToVerify;
+    }
+    verifiedTime = hours + ":" + minutes + " " + afterNoon;
+    return verifiedTime;
+  }
+
   let updateLog = function() {
     workedList.innerHTML = null;
     for (let i = 0; i < previousWork.length; i++){
       let itemArray = previousWork[i];
       let listItem = document.createElement('li');
       if (itemArray.length == 3) {
-        listItem.innerHTML = itemArray[2] + " hours / " + itemArray[1] + " minutes / " + itemArray[0] + " seconds";
+        listItem.innerHTML = itemArray[2] + " hours / " + itemArray[1] + " minutes / " + itemArray[0] + " seconds" + " | Started: " + timeStart + " - Stopped: " + timeEnd;
       } else if (itemArray.length == 2) {
-        listItem.innerHTML = itemArray[1] + " minutes / " + itemArray[0] + " seconds";
-      } else {
-        listItem.innerHTML = itemArray[0] + " seconds";
+        listItem.innerHTML = itemArray[1] + " minutes / " + itemArray[0] + " seconds" + " | Started: " + timeStart + " - Stopped: " + timeEnd;
+      } else if (itemArray.length == 1) {
+        listItem.innerHTML = itemArray[0] + " seconds" + " | Started: " + timeStart + " - Stopped: " + timeEnd;
       }
       workedList.appendChild(listItem);
     };
@@ -106,6 +124,10 @@
   document.getElementById('start').onclick = function() {
     if (!actualLoop){
       createLoop();
+      let hours = new Date().getHours();
+      let minutes = new Date().getMinutes();
+      formatTime(hours, minutes);
+      timeStart = verifiedTime;
       minutestoAppend.innerHTML = "None Yet!";
       hourstoAppend.innerHTML = "None Yet!";
     } else {
@@ -117,6 +139,10 @@
     if (actualLoop) {
       clearInterval(actualLoop);
       actualLoop = null;
+      let hours = new Date().getHours();
+      let minutes = new Date().getMinutes();
+      formatTime(hours, minutes);
+      timeEnd = verifiedTime;
       previousWork.push(currentWork);
       currentWork = [];
       // for (let i = 0; i < previousWork.length; i++){
@@ -133,6 +159,10 @@
       previousWork = [];
       workedList.innerHTML = null;
     }
+  }
+
+  document.onload = function () {
+    previousWork = [];
   }
     // window.addEventListener('keydown', function(e){
     //   let keyDown = Date.now();
