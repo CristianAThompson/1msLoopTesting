@@ -4,43 +4,195 @@
     <meta charset="utf-8">
     <title>Update test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      .randBlock {
+        min-height: 50px;
+        min-width: 50px;
+        z-index: -10;
+        position: absolute;
+      }
+    </style>
   </head>
   <body>
     Testing Update Looping
-    <p>Seconds: <span id="seconds"></span></p>
-    <p>Minutes: <span id="minutes">None Yet!</span></p>
-    <p>Hours: <span id="hours">None Yet!</span></p>
+    <p>Seconds: <span id="second"></span></p>
+    <p>Minutes: <span id="minute">None Yet!</span></p>
+    <p>Hours: <span id="hour">None Yet!</span></p>
+    <div>
+      <button type="button" id="start">Start</button>
+      <button type="button" id="stop">Stop</button>
+      <button type="button" id="clear">Clear</button>
+    </div>
+    <div>
+      <h3>How long you've worked!:</h3>
+      <ul id="worked">
+      </ul>
+    </div>
+    <!-- <p>Key pressed: </p>
+    <div id="controls">None Yet!</div> -->
+    </div>
   </body>
   <script type="text/javascript">
-  const secondsToAppend = document.getElementById('seconds');
-  const minutestoAppend = document.getElementById('minutes');
-  const hourstoAppend = document.getElementById('hours');
+  const secondsToAppend = document.getElementById('second');
+  const minutestoAppend = document.getElementById('minute');
+  const hourstoAppend = document.getElementById('hour');
+  const controlstoAppend = document.getElementById('controls');
+  const blockShifter = document.getElementsByClassName('randBlock');
+  const workedList = document.getElementById('worked');
+  let left = 0;
+  let up = 0;
+  let lastKey = 0;
+  let actualLoop;
+  let currentWork = [];
+  let previousWork = [];
+  let loopInterval, minutes, hours;
 
-  document.addEventListener("DOMContentLoaded", function() {
+
+  let createBlock = function() {
+    let thisDiv = document.createElement('div');
+    thisDiv.classList.add('randBlock');
+    thisDiv.style.background = "rgb(" + (Math.floor((Math.random() * 255) + 1)) + "," + (Math.floor((Math.random() * 255) + 1)) + "," + (Math.floor((Math.random() * 255) + 1)) + ")";
+    thisDiv.style.top = Math.floor((Math.random() * 500) + 1) + "px";
+    thisDiv.style.left = Math.floor((Math.random() * 500) + 1) + "px";
+    document.body.appendChild(thisDiv);
+  }
+
+  let updateLog = function() {
+    workedList.innerHTML = null;
+    for (let i = 0; i < previousWork.length; i++){
+      let itemArray = previousWork[i];
+      let listItem = document.createElement('li');
+      if (itemArray.length == 3) {
+        listItem.innerHTML = itemArray[2] + " hours / " + itemArray[1] + " minutes / " + itemArray[0] + " seconds";
+      } else if (itemArray.length == 2) {
+        listItem.innerHTML = itemArray[1] + " minutes / " + itemArray[0] + " seconds";
+      } else {
+        listItem.innerHTML = itemArray[0] + " seconds";
+      }
+      workedList.appendChild(listItem);
+    };
+  }
+
+  let createLoop = function() {
     const timeStarted = Date.now();
     let loopStart = Date.now();
+    let seconds = 0;
     let minutes = 0;
     let hours = 0;
-    let actualLoop = setInterval(function(){
+    actualLoop = setInterval(function(){
       const loopInterval = (Date.now() - loopStart) / 1000;
       if (loopInterval <= 60){
         secondsToAppend.innerHTML = loopInterval + 's';
-        return loopInterval;
+        currentWork.splice(0, 1, loopInterval);
       } else {
         if (minutes < 59){
-          minutes++;
+           minutes++;
           minutestoAppend.innerHTML = minutes;
+          currentWork.splice(1, 1, minutes);
         } else {
           minutes = 0;
-          minutestoAppend.innerHTML = minutes;
           hours++;
+          currentWork.splice(1, 1, minutes);
+          currentWork.splice(2, 1, hours);
+          minutestoAppend.innerHTML = minutes;
           hourstoAppend.innerHTML = hours;
         }
         loopStart = Date.now();
-        // clearInterval(actualLoop);
-        // location.reload();
+        lastBlock = Math.floor((Math.random() * 9) + 5);
       }
-    }, 1);
-  });
+    }, 10);
+  }
+
+  document.getElementById('start').onclick = function() {
+    if (!actualLoop){
+      createLoop();
+      minutestoAppend.innerHTML = "None Yet!";
+      hourstoAppend.innerHTML = "None Yet!";
+    } else {
+      return;
+    }
+  }
+
+  document.getElementById('stop').onclick = function() {
+    if (actualLoop) {
+      clearInterval(actualLoop);
+      actualLoop = null;
+      previousWork.push(currentWork);
+      currentWork = [];
+      // for (let i = 0; i < previousWork.length; i++){
+      //   console.log(previousWork[i]);
+      // };
+      updateLog();
+    } else {
+      return;
+    }
+  }
+
+  document.getElementById('clear').onclick = function() {
+    if (window.confirm("Are you sure you want to clear your log?")) {
+      previousWork = [];
+      workedList.innerHTML = null;
+    }
+  }
+    // window.addEventListener('keydown', function(e){
+    //   let keyDown = Date.now();
+    //   console.log(e.keyCode);
+    //   if ((e.keyCode == 65 || e.keyCode == 37)) {
+    //     if (keyDown - lastKey < 150) return;
+    //     lastKey = keyDown;
+    //     left-=10;
+    //     controlstoAppend.innerHTML = "Left Pressed";
+    //     controls.style.marginLeft = left + 'px';
+    //   } else if (e.keyCode == 68 || e.keyCode == 39) {
+    //     if (keyDown - lastKey < 150) return;
+    //     lastKey = keyDown;
+    //     left+=10;
+    //     controlstoAppend.innerHTML = "Right Pressed";
+    //     controls.style.marginLeft = left + 'px';
+    //   } else if (e.keyCode == 87 || e.keyCode == 38) {
+    //     if (keyDown - lastKey < 150) return;
+    //     lastKey = keyDown;
+    //     up-=10 ;
+    //     controlstoAppend.innerHTML = "Up Pressed";
+    //     controls.style.marginTop = up + 'px';
+    //   } else if (e.keyCode == 83 || e.keyCode == 40) {
+    //     if (keyDown - lastKey < 150) return;
+    //     lastKey = keyDown;
+    //     up+=10;
+    //     controlstoAppend.innerHTML = "Down Pressed";
+    //     controls.style.marginTop = up + 'px';
+    //   } else if (e.keyCode == 32) {
+    //     if (keyDown - lastKey < 225) return;
+    //     lastKey = keyDown;
+    //     up-=50;
+    //     controls.style.marginTop = up + 'px';
+    //     setTimeout(function() {
+    //       up+=50;
+    //       controls.style.marginTop = up + 'px';
+    //     }, 500);
+    //     controlstoAppend.innerHTML = "Jump Pressed";
+    //   }
+    // })
+    //
+    // document.addEventListener("DOMContentLoaded", function() {
+    //   createLoop();
+    // });
+    // let lastBlock = Math.floor((Math.random() * 9) + 5);
+    // if (parseInt(loopInterval) == lastBlock && lastBlock < 60) {
+    //   if (blockShifter.length >= 35) {
+    //     let firstBlock = blockShifter[0];
+    //     firstBlock.parentNode.removeChild(firstBlock);
+    //   }
+    //   createBlock();
+    //   lastBlock = lastBlock + Math.floor((Math.random() * 9) + 5);
+    // }
+    // for (let i = 0; i < blockShifter.length; i++) {
+    //   let top = blockShifter[i].offsetTop;
+    //   if (top < window.innerHeight - 50){
+    //     blockShifter[i].style.top = top + 1 +"px";
+    //   } else {
+    //     blockShifter[i].style.top = 0 + "px";
+    //   }
+    // }
   </script>
 </html>
