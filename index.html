@@ -5,11 +5,27 @@
     <title>Update test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+      body {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      button {
+        height: 36px;
+        border-radius: 3.25px;
+        background: rgba(0, 0, 0, 0.05);
+      }
+      button:hover {
+        background: rgba(34, 177, 152, 0.25);
+      }
       .randBlock {
         min-height: 50px;
         min-width: 50px;
         z-index: -10;
         position: absolute;
+      }
+      #worked {
+        list-style-type: circle;
       }
     </style>
   </head>
@@ -24,11 +40,9 @@
       <button type="button" id="clear">Clear</button>
       <button type="button" id="updateLog">Show/Update Log</button>
     </div>
-    <div>
-      <h3>How long you've worked:</h3>
-      <ul id="worked">
-      </ul>
-    </div>
+    <h3>How long you've worked:</h3>
+    <ul id="worked">
+    </ul>
     <!-- <p>Key pressed: </p>
     <div id="controls">None Yet!</div> -->
     </div>
@@ -143,11 +157,9 @@
   }
 
   document.getElementById('stop').onclick = function() {
-    if (click == 0) {
-      setTimeout(function() {
-        updateLog();
-      }, 500);
-    }
+    setTimeout(function() {
+      updateLog();
+    }, 500);
     if (actualLoop) {
       clearInterval(actualLoop);
       actualLoop = null;
@@ -159,9 +171,6 @@
                           'time_worked': currentWork,
                           'end_time': timeEnd});
       currentWork = [];
-      if (click == 0) {
-        click++;
-      }
     } else {
       return;
     }
