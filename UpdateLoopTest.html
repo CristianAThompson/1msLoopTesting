@@ -38,7 +38,6 @@
       <button type="button" id="start">Start</button>
       <button type="button" id="stop">Stop</button>
       <button type="button" id="clear">Clear</button>
-      <button type="button" id="updateLog">Show/Update Total</button>
     </div>
     <h3>How long you've worked: <span id="workedTotal"></span></h3>
     <ul id="worked">
@@ -192,6 +191,7 @@
       }
       totalSeconds += currentWork[0];
       currentWork = [];
+      updateTotalTime();
     } else {
       return;
     }
@@ -209,7 +209,7 @@
   }
 
   document.getElementById('updateLog').onclick = function() {
-    updateTotalTime();
+
   }
 
   document.onload = function () {
