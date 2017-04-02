@@ -92,15 +92,15 @@
   }
 
   let updateTotalTime = function(){
-    while (Number(totalSeconds) >= 60) {
+    if (totalSeconds >= 60) {
       totalSeconds -= 60;
       totalMinutes++;
     }
-    while (Number(totalMinutes) >= 60) {
+    if (totalMinutes >= 60) {
       totalMinutes -= 60;
       totalHours++;
     }
-    document.getElementById('workedTotal').innerHTML = totalHours + " - Hours : " + totalMinutes + " - Minutes : " + Math.round(totalSeconds) + " - Seconds";
+    document.getElementById('workedTotal').innerHTML = totalHours + " - Hours : " + totalMinutes + " - Minutes : " + totalSeconds.toFixed(2) + " - Seconds";
   }
 
   let updateLog = function() {
@@ -206,10 +206,6 @@
       totalHours = 0;
       updateLog();
     }
-  }
-
-  document.getElementById('updateLog').onclick = function() {
-
   }
 
   document.onload = function () {
