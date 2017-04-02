@@ -100,7 +100,7 @@
       totalMinutes -= 60;
       totalHours++;
     }
-    document.getElementById('workedTotal').innerHTML = totalHours + " - Hours : " + totalMinutes + " - Minutes : " + Math.round(totalSeconds) + " - Seconds";
+    document.getElementById('workedTotal').innerHTML = totalHours + " - Hours : " + totalMinutes + " - Minutes : " + totalSeconds.toFixed(2) + " - Seconds";
   }
 
   let updateLog = function() {
