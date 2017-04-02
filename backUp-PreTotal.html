@@ -38,9 +38,9 @@
       <button type="button" id="start">Start</button>
       <button type="button" id="stop">Stop</button>
       <button type="button" id="clear">Clear</button>
-      <button type="button" id="updateLog">Show/Update Total</button>
+      <button type="button" id="updateLog">Show/Update Log</button>
     </div>
-    <h3>How long you've worked: <span id="workedTotal"></span></h3>
+    <h3>How long you've worked:</h3>
     <ul id="worked">
     </ul>
     <!-- <p>Key pressed: </p>
@@ -54,17 +54,16 @@
   const controlstoAppend = document.getElementById('controls');
   const blockShifter = document.getElementsByClassName('randBlock');
   const workedList = document.getElementById('worked');
+  let left = 0;
+  let up = 0;
+  let lastKey = 0;
+  let click = 0;
   let actualLoop;
   let currentWork = [];
   let previousWork = [];
-  let timeStart, timeEnd, verifiedTime, workedTime;
+  let timeStart, timeEnd, verifiedTime;
   let loopInterval, minutes, hours, afterNoon;
-  let totalHours = 0;
-  let totalMinutes = 0;
-  let totalSeconds = 0;
-  // let left = 0;
-  // let up = 0;
-  // let lastKey = 0;
+
 
   let createBlock = function() {
     let thisDiv = document.createElement('div');
@@ -92,37 +91,24 @@
     return verifiedTime;
   }
 
-  let updateTotalTime = function(){
-    while (Number(totalSeconds) >= 60) {
-      totalSeconds -= 60;
-      totalMinutes++;
-    }
-    while (Number(totalMinutes) >= 60) {
-      totalMinutes -= 60;
-      totalHours++;
-    }
-    document.getElementById('workedTotal').innerHTML = totalHours + " - Hours : " + totalMinutes + " - Minutes : " + parseInt(totalSeconds) + " - Seconds";
-  }
-
   let updateLog = function() {
     workedList.innerHTML = null;
-
     for (let a = 0; a < previousWork.length; a++) {
       timeStart = previousWork[a].start_time;
       timeEnd = previousWork[a].end_time;
-      let listItem = document.createElement('li');
-      for (let i = 0; i < previousWork[a].time_worked.length; i++) {
+      for (let i = 0; i < previousWork[a].time_worked.length; i++){
         let itemArray = previousWork[a].time_worked;
         let itemArrayLength = previousWork[a].time_worked.length;
-        if (itemArrayLength === 3) {
+        let listItem = document.createElement('li');
+        if (itemArrayLength == 3) {
           listItem.innerHTML = itemArray[2] + " hours / " + itemArray[1] + " minutes / " + itemArray[0] + " seconds" + " | Started: " + timeStart + " - Stopped: " + timeEnd;
-        } else if (itemArrayLength === 2) {
+        } else if (itemArrayLength == 2) {
           listItem.innerHTML = itemArray[1] + " minutes / " + itemArray[0] + " seconds" + " | Started: " + timeStart + " - Stopped: " + timeEnd;
-        } else if (itemArrayLength === 1) {
+        } else if (itemArrayLength == 1) {
           listItem.innerHTML = itemArray[0] + " seconds" + " | Started: " + timeStart + " - Stopped: " + timeEnd;
         }
+        workedList.appendChild(listItem);
       };
-      workedList.appendChild(listItem);
     }
   }
 
@@ -184,13 +170,6 @@
       previousWork.push({'start_time': timeStart,
                           'time_worked': currentWork,
                           'end_time': timeEnd});
-      if (currentWork[2]) {
-        totalHours += currentWork[2];
-      }
-      if (currentWork[1]) {
-        totalMinutes += currentWork[1];
-      }
-      totalSeconds += currentWork[0];
       currentWork = [];
     } else {
       return;
@@ -201,15 +180,13 @@
     if (window.confirm("Are you sure you want to clear your log?")) {
       secondsToAppend.innerHTML = "0.000";
       previousWork = [];
-      totalSeconds = 0;
-      totalMinutes = 0;
-      totalHours = 0;
+      click = 0;
       updateLog();
     }
   }
 
   document.getElementById('updateLog').onclick = function() {
-    updateTotalTime();
+    updateLog();
   }
 
   document.onload = function () {
