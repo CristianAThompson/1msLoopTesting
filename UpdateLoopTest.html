@@ -105,14 +105,14 @@
 
   let updateLog = function() {
     workedList.innerHTML = null;
-
-    for (let a = 0; a < previousWork.length; a++) {
-      timeStart = previousWork[a].start_time;
-      timeEnd = previousWork[a].end_time;
+    pWorkReverse = previousWork.reverse();
+    for (let a = 0; a < pWorkReverse.length; a++) {
+      timeStart = pWorkReverse[a].start_time;
+      timeEnd = pWorkReverse[a].end_time;
       let listItem = document.createElement('li');
-      for (let i = 0; i < previousWork[a].time_worked.length; i++) {
-        let itemArray = previousWork[a].time_worked;
-        let itemArrayLength = previousWork[a].time_worked.length;
+      for (let i = 0; i < pWorkReverse[a].time_worked.length; i++) {
+        let itemArray = pWorkReverse[a].time_worked;
+        let itemArrayLength = pWorkReverse[a].time_worked.length;
         if (itemArrayLength === 3) {
           listItem.innerHTML = itemArray[2] + " hours / " + itemArray[1] + " minutes / " + itemArray[0] + " seconds" + " | Started: " + timeStart + " - Stopped: " + timeEnd;
         } else if (itemArrayLength === 2) {
